@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="منبّهي">
+<meta name="theme-color" content="#0a0a18">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<title>منبّهي الذكي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet"></noscript>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --c1:#0a0a18;--accent:#e94560;--gold:#f5a623;--mint:#00d4aa;--sky:#4facfe;
+  --purple:#c77dff;--pink:#ff6b9d;--text:#fff;--text2:#a8b2d8;--text3:#4a5568;
+  --card:rgba(255,255,255,0.04);--cb:rgba(255,255,255,0.08);--r:14px;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)
+}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--c1);color:var(--text);min-height:100vh;padding-top:var(--safe-t)}
+.glow1{position:fixed;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(233,69,96,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+.glow2{position:fixed;bottom:-200px;left:-200px;width:550px;height:550px;background:radial-gradient(circle,rgba(79,172,254,.09) 0%,transparent 70%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:1rem 1rem calc(4rem + var(--safe-b))}
+.hdr{text-align:center;padding:1.2rem 0 .8rem}
+.hdr h1{font-size:25px;font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--sky) 50%,var(--mint) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr p{color:var(--text2);font-size:12px;margin-top:3px}
+
+/* NOTIF PERMISSION BANNER */
+.perm-banner{background:linear-gradient(135deg,rgba(233,69,96,.15),rgba(233,69,96,.05));border:1px solid rgba(233,69,96,.35);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.perm-banner.hidden{display:none}
+.perm-banner-text{flex:1;font-size:12px;color:var(--text2);font-weight:600}
+.perm-banner-text strong{color:#fff;display:block;font-size:13px;margin-bottom:2px}
+.btn-perm{background:var(--accent);border:none;border-radius:8px;padding:8px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* INSTALL PWA BANNER */
+.install-banner{background:linear-gradient(135deg,rgba(79,172,254,.15),rgba(0,212,170,.08));border:1px solid rgba(79,172,254,.4);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:1rem;display:none;align-items:center;gap:10px;animation:slideDown .4s ease}
+.install-banner.show{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.install-banner-icon{font-size:26px;flex-shrink:0}
+.install-banner-text{flex:1;font-size:12px;color:var(--text2);font-weight:600}
+.install-banner-text strong{color:#fff;display:block;font-size:13px;margin-bottom:2px}
+.install-banner-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.btn-install{background:linear-gradient(135deg,var(--sky),var(--mint));border:none;border-radius:8px;padding:8px 14px;color:#000;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-install-later{background:none;border:none;color:var(--text3);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;text-align:center}
+
+/* INSTALL GUIDE MODAL (iOS) */
+.ios-guide{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;padding:1rem}
+.ios-guide.show{display:flex}
+.ios-guide-box{background:#1a1a3e;border:1px solid rgba(79,172,254,.4);border-radius:18px;padding:1.4rem;width:100%;max-width:400px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ios-guide-title{font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:1rem}
+.ios-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:.85rem}
+.ios-step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--sky),var(--mint));color:#000;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ios-step-text{font-size:13px;color:var(--text2);line-height:1.5;padding-top:3px}
+.ios-step-text strong{color:#fff}
+.ios-arrow{text-align:center;font-size:28px;margin-bottom:.5rem;animation:bounce .8s ease infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.btn-ios-close{background:rgba(255,255,255,.08);border:1px solid var(--cb);border-radius:10px;padding:10px;width:100%;color:var(--text2);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:.5rem}
+
+/* CLOCK */
+.clock-card{background:linear-gradient(135deg,#1a1a4e,#0f2460);border:1px solid rgba(79,172,254,.22);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:space-between}
+.clock-left{display:flex;flex-direction:column}
+.clock-row1{display:flex;align-items:center;gap:0}
+.clock-time{font-size:36px;font-weight:900;font-family:'Tajawal',sans-serif;color:#fff;line-height:1}
+.clock-ampm-block{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;margin-right:8px;gap:3px}
+.clock-ampm{font-size:12px;font-weight:700;padding:3px 7px;border-radius:6px;white-space:nowrap;line-height:1}
+.clock-ampm.am{background:rgba(0,212,170,.25);color:var(--mint)}
+.clock-ampm.pm{background:rgba(233,69,96,.25);color:var(--pink)}
+.clock-ampm.inactive{background:rgba(255,255,255,.05);color:var(--text3)}
+.clock-day{font-size:14px;font-weight:700;color:#fff;margin-top:4px}
+.clock-date-en{font-size:11px;color:var(--text2);margin-top:1px}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--mint);display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:1.1rem}
+.stat{background:var(--card);border:1.5px solid transparent;border-radius:12px;padding:11px;text-align:center;cursor:pointer;transition:all .2s;user-select:none}
+.stat:active{transform:scale(.96)}
+.stat-n{font-size:22px;font-weight:900;font-family:'Tajawal',sans-serif}
+.stat-l{font-size:10px;color:var(--text2);margin-top:1px}
+
+/* PANELS */
+.panel-box{border-radius:var(--r);margin-bottom:1.1rem;overflow:hidden}
+.panel-pending{background:var(--card);border:1px solid rgba(245,166,35,.25)}
+.panel-done{background:var(--card);border:1px solid rgba(0,212,170,.2)}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem}
+.panel-hdr-pending{border-bottom:1px solid rgba(245,166,35,.15)}
+.panel-hdr-done{border-bottom:1px solid rgba(0,212,170,.12)}
+.panel-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+.cnt-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px}
+.sep-time{font-size:10px;color:var(--text3);padding:.3rem .9rem;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.03)}
+.pending-item{display:flex;align-items:center;gap:9px;padding:.55rem .9rem;border-bottom:1px solid rgba(255,255,255,.03)}
+.pending-item:last-child{border-bottom:none}
+.pend-ico{font-size:16px;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pend-info{flex:1;min-width:0}
+.pend-title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pend-cat{font-size:10px;margin-top:1px}
+.pend-time-center{text-align:center;flex-shrink:0;min-width:56px}
+.pend-time-val{font-size:14px;font-weight:900;font-family:'Tajawal',sans-serif}
+.pend-ampm-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;cursor:pointer;display:inline-block;margin-top:2px}
+.pend-ampm-badge.am{background:rgba(0,212,170,.2);color:var(--mint)}
+.pend-ampm-badge.pm{background:rgba(233,69,96,.2);color:var(--pink)}
+.pend-diff{font-size:10px;color:var(--text3);margin-top:2px}
+.pend-actions{display:flex;align-items:flex-end;gap:4px;flex-shrink:0}
+.pend-act-wrap{display:flex;flex-direction:column;align-items:center;gap:2px}
+.pend-act-lbl{font-size:9px;color:var(--text3);font-weight:600;white-space:nowrap}
+.btn-pend-act{border:1px solid var(--cb);border-radius:7px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;background:none;flex-shrink:0}
+.btn-pend-edit{color:var(--sky)}.btn-pend-del{color:var(--accent)}
+.pend-edit-wrap{position:relative}
+.pend-edit-popup{position:absolute;left:0;top:48px;background:#1a1a3e;border:1px solid var(--cb);border-radius:10px;padding:9px;z-index:50;display:none;min-width:160px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+.pend-edit-popup.open{display:block}
+.pend-edit-popup input[type=time]{background:rgba(255,255,255,.08);border:1px solid var(--cb);border-radius:7px;padding:6px 9px;color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;outline:none;width:100%;margin-bottom:6px}
+.pend-edit-ampm{display:flex;gap:5px;margin-bottom:7px}
+.pend-edit-ampm button{flex:1;border:none;border-radius:6px;padding:5px;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer}
+.ea-am-sel{background:rgba(0,212,170,.3);color:var(--mint)}.ea-pm-sel{background:rgba(233,69,96,.3);color:var(--pink)}.ea-unsel{background:rgba(255,255,255,.07);color:var(--text3)}
+.pend-save-btn{background:linear-gradient(135deg,var(--accent),var(--pink));border:none;border-radius:7px;padding:6px;width:100%;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.done-item{display:flex;align-items:center;gap:9px;padding:.55rem .9rem;border-bottom:1px solid rgba(255,255,255,.03);opacity:.72}
+.done-item:last-child{border-bottom:none}
+.done-ico{font-size:16px;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:grayscale(.4)}
+.done-info{flex:1;min-width:0}
+.done-title{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(0,212,170,.6)}
+.done-meta{font-size:10px;color:var(--text3);margin-top:1px}
+.done-auto-tag{font-size:9px;background:rgba(0,212,170,.15);color:var(--mint);border-radius:4px;padding:1px 5px;font-weight:700;margin-right:3px}
+.done-time-col{text-align:center;flex-shrink:0;min-width:50px}
+.done-time-val{font-size:13px;font-weight:900;font-family:'Tajawal',sans-serif;color:var(--mint)}
+.done-ampm{font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;background:rgba(0,212,170,.15);color:var(--mint);display:inline-block;margin-top:1px}
+.btn-undone{background:none;border:1px solid rgba(0,212,170,.3);border-radius:7px;padding:4px 9px;font-family:'Cairo',sans-serif;font-size:10px;font-weight:700;color:var(--mint);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.no-items{text-align:center;padding:1.2rem;color:var(--text3);font-size:12px}
+
+/* SOUND */
+.sound-bar{background:var(--card);border:1px solid var(--cb);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:1.1rem}
+.sound-bar-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:.6rem}
+.sounds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sound-btn{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-radius:10px;padding:8px 5px;text-align:center;cursor:pointer;font-family:'Cairo',sans-serif;user-select:none}
+.sound-btn:active{transform:scale(.95)}
+.sound-btn.active{border-color:var(--sky);background:rgba(79,172,254,.18)}
+.sound-ico{font-size:17px;margin-bottom:3px}
+.sound-lbl{font-size:10px;font-weight:700;color:var(--text2)}
+.sound-btn.active .sound-lbl{color:var(--sky)}
+.sound-preview{font-size:9px;color:var(--text3);margin-top:1px}
+
+/* PRAYER */
+.prayer-card{background:var(--card);border:1px solid rgba(245,166,35,.2);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:1.1rem}
+.prayer-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.prayer-hdr-title{font-size:14px;font-weight:700;color:var(--gold)}
+.city-sel{background:rgba(255,255,255,.07);border:1px solid var(--cb);border-radius:8px;padding:5px 9px;color:var(--text);font-family:'Cairo',sans-serif;font-size:12px;outline:none;cursor:pointer}
+.city-sel option{background:#1a1a3e}
+.prayers-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.pr-item{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-radius:9px;padding:7px 2px;text-align:center;cursor:pointer;user-select:none}
+.pr-item:active{transform:scale(.94)}
+.pr-item.current{background:rgba(245,166,35,.18);border-color:var(--gold)}
+.pr-item.passed{opacity:.45}
+.pr-name{font-size:10px;font-weight:700;color:var(--gold)}
+.pr-time{font-size:11px;font-weight:900;font-family:'Tajawal',sans-serif;color:#fff;margin-top:1px}
+.pr-ampm{font-size:9px;padding:1px 4px;border-radius:3px;margin-top:2px;display:inline-block;font-weight:700}
+.pr-ampm.am{background:rgba(0,212,170,.2);color:var(--mint)}
+.pr-ampm.pm{background:rgba(233,69,96,.2);color:var(--pink)}
+
+/* FORM */
+.section-title{font-size:14px;font-weight:700;color:var(--text2);margin:1.1rem 0 .65rem;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:block;width:3px;height:16px;background:var(--accent);border-radius:2px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:1.1rem}
+.cat-btn{background:var(--card);border:1px solid var(--cb);border-radius:11px;padding:12px 5px 8px;cursor:pointer;text-align:center;user-select:none}
+.cat-btn:active{transform:scale(.95)}
+.cat-btn.active{border-width:1.5px}
+.cat-icon{font-size:19px;margin-bottom:3px;display:block}
+.cat-label{font-size:10px;font-weight:700}
+.cat-btn[data-cat=prayer].active{background:rgba(245,166,35,.18);border-color:var(--gold)}.cat-btn[data-cat=prayer] .cat-label{color:var(--gold)}
+.cat-btn[data-cat=meds].active{background:rgba(255,107,157,.18);border-color:var(--pink)}.cat-btn[data-cat=meds] .cat-label{color:var(--pink)}
+.cat-btn[data-cat=study].active{background:rgba(79,172,254,.18);border-color:var(--sky)}.cat-btn[data-cat=study] .cat-label{color:var(--sky)}
+.cat-btn[data-cat=gym].active{background:rgba(0,212,170,.18);border-color:var(--mint)}.cat-btn[data-cat=gym] .cat-label{color:var(--mint)}
+.cat-btn[data-cat=checkup].active{background:rgba(199,125,255,.18);border-color:var(--purple)}.cat-btn[data-cat=checkup] .cat-label{color:var(--purple)}
+.cat-btn[data-cat=custom].active{background:rgba(168,178,216,.18);border-color:var(--text2)}.cat-btn[data-cat=custom] .cat-label{color:var(--text2)}
+.add-form{background:var(--card);border:1px solid var(--cb);border-radius:var(--r);padding:1rem;margin-bottom:1.1rem}
+.inp{background:rgba(255,255,255,.07);border:1px solid var(--cb);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;width:100%;outline:none;-webkit-appearance:none}
+.inp:focus{border-color:var(--accent)}
+.inp::placeholder{color:var(--text3)}
+select.inp option{background:#1a1a2e;color:#fff}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.times-block{margin-top:9px}
+.times-label{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.times-count-badge{background:rgba(79,172,254,.2);color:var(--sky);font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px}
+.times-list{display:flex;flex-direction:column;gap:7px}
+.time-row{display:flex;align-items:center;gap:5px;animation:fadeSlide .2s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.time-row-num{font-size:10px;color:var(--text3);font-weight:700;min-width:14px;text-align:center;flex-shrink:0}
+.time-inp-wrap{display:flex;align-items:center;gap:3px;flex:1;background:rgba(255,255,255,.07);border:1px solid var(--cb);border-radius:9px;padding:4px 4px 4px 8px}
+.time-inp-wrap:focus-within{border-color:var(--accent)}
+.time-inp-wrap input[type=time]{background:transparent;border:none;color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;outline:none;flex:1;min-width:0;-webkit-appearance:none}
+.ampm-pair{display:flex;gap:2px;flex-shrink:0}
+.ampm-pair button{font-size:10px;font-weight:700;padding:5px 7px;border-radius:6px;cursor:pointer;border:1px solid transparent;font-family:'Cairo',sans-serif;user-select:none}
+.ampm-pair .btn-am{background:rgba(0,212,170,.12);color:var(--mint);border-color:rgba(0,212,170,.2)}
+.ampm-pair .btn-am.sel{background:rgba(0,212,170,.35);border-color:var(--mint)}
+.ampm-pair .btn-pm{background:rgba(233,69,96,.12);color:var(--pink);border-color:rgba(233,69,96,.2)}
+.ampm-pair .btn-pm.sel{background:rgba(233,69,96,.35);border-color:var(--pink)}
+.btn-rem-time{background:rgba(233,69,96,.15);border:1px solid rgba(233,69,96,.3);border-radius:8px;width:28px;height:28px;color:var(--accent);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-add-time{background:rgba(0,212,170,.1);border:1px dashed rgba(0,212,170,.3);border-radius:9px;padding:8px;width:100%;color:var(--mint);font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:7px;display:flex;align-items:center;justify-content:center;gap:5px}
+.multi-confirm{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:9px;padding:6px 10px;margin-top:7px;font-size:11px;color:var(--mint);display:none;align-items:center;gap:7px}
+.multi-confirm.show{display:flex}
+.btn-add-main{background:linear-gradient(135deg,var(--accent),#ff6b9d);border:none;border-radius:10px;padding:13px;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-top:9px}
+.btn-add-main:active{opacity:.85;transform:scale(.98)}
+
+/* FILTER/LIST */
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:.8rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.filter-row::-webkit-scrollbar{display:none}
+.fpill{background:var(--card);border:1px solid var(--cb);border-radius:50px;padding:5px 13px;font-family:'Cairo',sans-serif;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;user-select:none}
+.fpill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.fpill:active{transform:scale(.94)}
+.reminders-list{display:flex;flex-direction:column;gap:8px}
+.rem-card{background:var(--card);border:1px solid var(--cb);border-radius:var(--r);overflow:hidden;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.rem-card.done-all{opacity:.4}
+.rem-card.done-all .rem-title-text{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(0,212,170,.6);color:var(--text2)}
+.rem-main{display:flex;align-items:center;gap:11px;padding:.85rem 1rem;cursor:pointer;user-select:none}
+.rem-icon-w{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.rem-info{flex:1;min-width:0}
+.rem-title-text{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rem-meta{font-size:10px;color:var(--text2);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tbadge{border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700}
+.rem-repeat{color:var(--text3);font-size:10px}
+.expand-icon{color:var(--text3);font-size:12px;transition:transform .25s;flex-shrink:0}
+.rem-card.open .expand-icon{transform:rotate(180deg)}
+.rem-times-panel{padding:0 .9rem .85rem;border-top:1px solid var(--cb);display:none}
+.rem-card.open .rem-times-panel{display:block}
+.times-panel-title{font-size:11px;color:var(--text2);margin:.6rem 0 .4rem;font-weight:700}
+.time-slot-list{display:flex;flex-direction:column;gap:5px}
+.time-slot{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--cb);border-radius:9px;padding:7px 11px}
+.time-slot.slot-done{background:rgba(0,212,170,.05);border-color:rgba(0,212,170,.25);opacity:.6}
+.ts-time{font-size:14px;font-weight:900;font-family:'Tajawal',sans-serif;display:flex;align-items:center;gap:5px}
+.slot-done .ts-time{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(0,212,170,.7);color:var(--text2)}
+.ts-ampm{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px}
+.ts-ampm.am{background:rgba(0,212,170,.2);color:var(--mint)}
+.ts-ampm.pm{background:rgba(233,69,96,.2);color:var(--pink)}
+.ts-note{font-size:10px;color:var(--text3);margin-top:1px}
+.btn-ts-done{background:none;border:1px solid var(--cb);border-radius:7px;padding:5px 10px;font-family:'Cairo',sans-serif;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;user-select:none}
+.btn-ts-done.done{background:rgba(0,212,170,.2);border-color:var(--mint);color:var(--mint)}
+.btn-del-rem{background:none;border:none;color:var(--text3);cursor:pointer;padding:5px;border-radius:7px;font-size:15px;flex-shrink:0}
+.empty-st{text-align:center;padding:2.5rem 1rem;color:var(--text3)}
+.empty-st .eico{font-size:40px;margin-bottom:10px}
+
+/* ALARM SCREEN */
+.alarm-overlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#080820,#1a0528,#0a1a10);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.alarm-overlay.show{display:flex}
+.alarm-pulse1{position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(233,69,96,.1);animation:apulse 1.2s ease-out infinite}
+.alarm-pulse2{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(233,69,96,.15);animation:apulse 1.2s ease-out .4s infinite}
+@keyframes apulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.8);opacity:0}}
+.alarm-emoji{font-size:58px;position:relative;z-index:1;animation:ashake .35s ease infinite}
+@keyframes ashake{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+.alarm-info{text-align:center;position:relative;z-index:1}
+.alarm-ttl{font-size:22px;font-weight:900;color:#fff;margin-bottom:3px}
+.alarm-tm{font-size:50px;font-weight:900;font-family:'Tajawal',sans-serif;color:#fff;line-height:1}
+.alarm-ap{font-size:17px;color:var(--text2);margin-top:2px}
+.alarm-cat{font-size:13px;margin-top:5px}
+.alarm-nt{font-size:12px;color:var(--text3);margin-top:3px;font-style:italic;max-width:260px}
+.alarm-cycle{font-size:12px;color:var(--text3);min-height:18px;text-align:center;position:relative;z-index:1}
+.alarm-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1}
+.btn-alarm-snooze{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:50px;padding:12px 26px;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.btn-alarm-done{background:linear-gradient(135deg,var(--mint),#00a884);border:none;border-radius:50px;padding:12px 30px;color:#000;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,170,.4)}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(65px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(80px);background:var(--mint);color:#0a2e26;padding:10px 20px;border-radius:50px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;z-index:999;transition:transform .3s,opacity .3s;opacity:0;white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.auto-notif{position:fixed;bottom:calc(75px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#0f3028,#0a2a22);border:1px solid rgba(0,212,170,.5);border-radius:12px;padding:10px 16px;z-index:998;opacity:0;transition:all .4s;pointer-events:none;white-space:nowrap}
+.auto-notif.show{transform:translateX(-50%) translateY(0);opacity:1}
+.auto-notif-inner{display:flex;align-items:center;gap:8px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;color:var(--mint)}
+</style>
+
+<!-- Capacitor Native Bridge -->
+<script src="capacitor.js"></script>
+<script>
+// Capacitor Local Notifications wrapper
+async function initCapacitorNotifications() {
+  if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+    const { LocalNotifications } = Capacitor.Plugins;
+    if (LocalNotifications) {
+      const perm = await LocalNotifications.requestPermissions();
+      if (perm.display === 'granted') {
+        console.log('Local notifications granted');
+        window._nativeNotif = true;
+      }
+    }
+  }
+}
+async function scheduleNativeAlarm(id, title, body, scheduledDate) {
+  if (!window._nativeNotif) return false;
+  try {
+    const { LocalNotifications } = Capacitor.Plugins;
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: id,
+        title: title,
+        body: body,
+        schedule: { at: scheduledDate, repeats: false, allowWhileIdle: true },
+        sound: null,
+        actionTypeId: 'ALARM',
+        extra: null,
+        channelId: 'alarm',
+        smallIcon: 'ic_launcher',
+        iconColor: '#4facfe',
+      }]
+    });
+    return true;
+  } catch(e) { console.warn('Native alarm failed:', e); return false; }
+}
+async function cancelNativeAlarm(id) {
+  if (!window._nativeNotif) return;
+  try {
+    const { LocalNotifications } = Capacitor.Plugins;
+    await LocalNotifications.cancel({ notifications: [{ id }] });
+  } catch(e) {}
+}
+document.addEventListener('deviceready', initCapacitorNotifications, false);
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initCapacitorNotifications, 500);
+});
+</script>
+</head>
+<body>
+<div class="glow1"></div><div class="glow2"></div>
+
+<!-- ALARM SCREEN -->
+<div class="alarm-overlay" id="alarmOverlay">
+  <div class="alarm-pulse1"></div><div class="alarm-pulse2"></div>
+  <div class="alarm-emoji" id="alarmEmoji">🔔</div>
+  <div class="alarm-info">
+    <div class="alarm-ttl" id="alarmTtl">تنبيه</div>
+    <div class="alarm-tm" id="alarmTm">12:00</div>
+    <div class="alarm-ap" id="alarmAp">صباحاً</div>
+    <div class="alarm-cat" id="alarmCat"></div>
+    <div class="alarm-nt" id="alarmNt"></div>
+  </div>
+  <div class="alarm-cycle" id="alarmCycle">يرن الآن...</div>
+  <div class="alarm-btns">
+    <button class="btn-alarm-snooze" onclick="snoozeAlarm()">⏰ تأجيل 5 دقائق</button>
+    <button class="btn-alarm-done" onclick="doneAlarm()">✓ تم الانتهاء</button>
+  </div>
+</div>
+
+<div class="auto-notif" id="autoNotif"><div class="auto-notif-inner"><span style="font-size:18px">✅</span><span id="autoNotifTxt"></span></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="app">
+<!-- NOTIF PERMISSION BANNER -->
+<div class="perm-banner hidden" id="permBanner">
+  <span style="font-size:28px">🔔</span>
+  <div class="perm-banner-text">
+    <strong>فعّل الإشعارات للمنبه في الخلفية</strong>
+    بدونها لن يعمل المنبه عند إغلاق التطبيق
+  </div>
+  <button class="btn-perm" onclick="requestPermission()">تفعيل</button>
+</div>
+
+<!-- INSTALL PWA BANNER -->
+<div class="install-banner" id="installBanner">
+  <div class="install-banner-icon">📲</div>
+  <div class="install-banner-text">
+    <strong>ثبّت التطبيق على موبايلك</strong>
+    يشتغل بدون إنترنت وبأيقونة مستقلة
+  </div>
+  <div class="install-banner-btns">
+    <button class="btn-install" id="btnInstall" onclick="doInstall()">تثبيت</button>
+    <button class="btn-install-later" onclick="dismissInstall()">لاحقاً</button>
+  </div>
+</div>
+
+<!-- iOS GUIDE MODAL -->
+<div class="ios-guide" id="iosGuide">
+  <div class="ios-guide-box">
+    <div class="ios-guide-title">📲 تثبيت منبّهي على iPhone</div>
+    <div class="ios-step">
+      <div class="ios-step-num">١</div>
+      <div class="ios-step-text">اضغط زر <strong>المشاركة</strong> في أسفل Safari <strong>⬆️</strong></div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">٢</div>
+      <div class="ios-step-text">اختر <strong>"إضافة إلى الشاشة الرئيسية"</strong> من القائمة</div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">٣</div>
+      <div class="ios-step-text">اضغط <strong>"إضافة"</strong> في الأعلى ✅</div>
+    </div>
+    <div class="ios-arrow">⬇️</div>
+    <button class="btn-ios-close" onclick="document.getElementById('iosGuide').classList.remove('show')">فهمت ✓</button>
+  </div>
+</div>
+
+<div class="hdr"><h1>🔔 منبّهي الذكي</h1><p>نظام متكامل لإدارة تنبيهاتك اليومية</p></div>
+
+<!-- CLOCK -->
+<div class="clock-card">
+  <div class="clock-left">
+    <div class="clock-row1">
+      <div class="clock-time" id="clockT">12:00:00</div>
+      <div class="clock-ampm-block">
+        <span class="clock-ampm am" id="clockAmBadge">ص صباحاً</span>
+        <span class="clock-ampm pm inactive" id="clockPmBadge">م مساءً</span>
+      </div>
+    </div>
+    <div class="clock-day" id="clockDay">الأحد</div>
+    <div class="clock-date-en" id="clockDateEN"></div>
+  </div>
+  <div style="text-align:left">
+    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px"><span class="pulse-dot"></span><span style="font-size:10px;color:var(--mint);font-weight:700">نشط</span></div>
+    <div style="font-size:10px;color:var(--text2)" id="totalCount">0 تنبيه</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat" id="statAll" onclick="filterByStat('all')"><div class="stat-n" id="sTotal" style="color:var(--sky)">0</div><div class="stat-l">الكل</div></div>
+  <div class="stat" id="statDoneEl" onclick="filterByStat('done')"><div class="stat-n" id="sDone" style="color:var(--mint)">0</div><div class="stat-l">مكتمل ✓</div></div>
+  <div class="stat" id="statPendEl" onclick="filterByStat('pending')"><div class="stat-n" id="sPend" style="color:var(--gold)">0</div><div class="stat-l">قادم ⏳</div></div>
+</div>
+
+<div class="panel-box panel-pending" id="pendingPanel" style="display:none">
+  <div class="panel-hdr panel-hdr-pending">
+    <div class="panel-title" style="color:var(--gold)">⏳ القادمة <span class="cnt-badge" id="pendingCnt" style="background:rgba(245,166,35,.2);color:var(--gold)">0</span></div>
+    <div style="font-size:10px;color:var(--text3)">مرتبة بالوقت</div>
+  </div>
+  <div id="pendingList"></div>
+</div>
+<div class="panel-box panel-done" id="donePanel" style="display:none">
+  <div class="panel-hdr panel-hdr-done">
+    <div class="panel-title" style="color:var(--mint)">✅ المكتملة <span class="cnt-badge" id="doneCnt" style="background:rgba(0,212,170,.2);color:var(--mint)">0</span></div>
+    <div style="font-size:10px;color:var(--text3)">أُنجزت أو انتهى وقتها</div>
+  </div>
+  <div id="doneList"></div>
+</div>
+
+<div class="sound-bar">
+  <div class="sound-bar-title">🔊 صوت التنبيه</div>
+  <div class="sounds-grid" id="soundsGrid"></div>
+</div>
+
+<div class="prayer-card">
+  <div class="prayer-hdr">
+    <div class="prayer-hdr-title">🕌 أوقات الصلاة</div>
+    <select class="city-sel" id="citySelect" onchange="onCityChange()">
+      <option value="jeddah">جدة</option><option value="riyadh">الرياض</option>
+      <option value="mecca">مكة المكرمة</option><option value="medina">المدينة المنورة</option>
+      <option value="cairo">القاهرة</option><option value="dubai">دبي</option>
+      <option value="kuwait">الكويت</option><option value="amman">عمان</option>
+      <option value="doha">الدوحة</option><option value="muscat">مسقط</option>
+      <option value="baghdad">بغداد</option><option value="beirut">بيروت</option>
+      <option value="rabat">الرباط</option>
+    </select>
+  </div>
+  <div class="prayers-grid" id="prayersGrid"></div>
+</div>
+
+<div class="section-title">نوع التنبيه</div>
+<div class="cats">
+  <button class="cat-btn active" data-cat="prayer" onclick="selCat(this)"><span class="cat-icon">🕌</span><span class="cat-label">صلاة</span></button>
+  <button class="cat-btn" data-cat="meds" onclick="selCat(this)"><span class="cat-icon">💊</span><span class="cat-label">دواء</span></button>
+  <button class="cat-btn" data-cat="study" onclick="selCat(this)"><span class="cat-icon">📚</span><span class="cat-label">مذاكرة</span></button>
+  <button class="cat-btn" data-cat="gym" onclick="selCat(this)"><span class="cat-icon">🏋️</span><span class="cat-label">جيم</span></button>
+  <button class="cat-btn" data-cat="checkup" onclick="selCat(this)"><span class="cat-icon">🩺</span><span class="cat-label">فحوصات</span></button>
+  <button class="cat-btn" data-cat="custom" onclick="selCat(this)"><span class="cat-icon">✨</span><span class="cat-label">مخصص</span></button>
+</div>
+<div class="add-form">
+  <input class="inp" type="text" id="remTitle" placeholder="عنوان التنبيه..." autocomplete="off">
+  <div class="form-row2">
+    <select class="inp" id="remRepeat"><option value="once">مرة واحدة</option><option value="daily">يومياً</option><option value="weekly">أسبوعياً</option><option value="workdays">أيام العمل</option></select>
+    <input class="inp" type="text" id="remNote" placeholder="ملاحظة (اختياري)" autocomplete="off">
+  </div>
+  <div class="times-block">
+    <div class="times-label"><span>⏰ مواعيد التنبيه</span><span class="times-count-badge" id="timesCnt">1 موعد</span></div>
+    <div class="times-list" id="timesList"></div>
+    <div class="multi-confirm" id="multiConfirm"><span style="font-size:15px">✅</span><span id="multiTxt"></span></div>
+    <button class="btn-add-time" onclick="addTimeRow()"><span style="font-size:15px">＋</span> إضافة موعد آخر</button>
+  </div>
+  <button class="btn-add-main" onclick="addReminder()">🔔 إضافة التنبيه</button>
+</div>
+
+<div class="section-title">تنبيهاتي</div>
+<div class="filter-row">
+  <button class="fpill active" data-f="all" onclick="setFilter(this)">الكل</button>
+  <button class="fpill" data-f="prayer" onclick="setFilter(this)">🕌 صلاة</button>
+  <button class="fpill" data-f="meds" onclick="setFilter(this)">💊 دواء</button>
+  <button class="fpill" data-f="study" onclick="setFilter(this)">📚 مذاكرة</button>
+  <button class="fpill" data-f="gym" onclick="setFilter(this)">🏋️ جيم</button>
+  <button class="fpill" data-f="checkup" onclick="setFilter(this)">🩺 فحوصات</button>
+  <button class="fpill" data-f="custom" onclick="setFilter(this)">✨ مخصص</button>
+</div>
+<div class="reminders-list" id="remList"></div>
+</div>
+
+<script>
+/* ═══ CONSTANTS ═══ */
+const CATS={prayer:{icon:'🕌',color:'#f5a623',bg:'rgba(245,166,35,.2)',label:'صلاة'},meds:{icon:'💊',color:'#ff6b9d',bg:'rgba(255,107,157,.2)',label:'دواء'},study:{icon:'📚',color:'#4facfe',bg:'rgba(79,172,254,.2)',label:'مذاكرة'},gym:{icon:'🏋️',color:'#00d4aa',bg:'rgba(0,212,170,.2)',label:'جيم'},checkup:{icon:'🩺',color:'#c77dff',bg:'rgba(199,125,255,.2)',label:'فحوصات'},custom:{icon:'✨',color:'#a8b2d8',bg:'rgba(168,178,216,.2)',label:'مخصص'}};
+const RPLBL={once:'مرة واحدة',daily:'يومياً',weekly:'أسبوعياً',workdays:'أيام العمل'};
+const PNAMES=['الفجر','الشروق','الظهر','العصر','المغرب','العشاء'];
+const SOUNDS=[{id:'bell',label:'جرس ذهبي',icon:'🔔',desc:'ذهبي ▶'},{id:'chime',label:'رنين بلوري',icon:'🎵',desc:'بلوري ▶'},{id:'digital',label:'إلكتروني',icon:'📳',desc:'رقمي ▶'},{id:'nature',label:'طبيعة',icon:'🌿',desc:'طبيعة ▶'},{id:'oud',label:'عود عربي',icon:'🎶',desc:'شرقي ▶'},{id:'urgent',label:'عاجل',icon:'🚨',desc:'عاجل ▶'}];
+/* tz = IANA timezone string so Intl.DateTimeFormat gives us correct local offset including DST */
+const CITIES={
+  jeddah: {lat:21.4858,lng:39.1925,tz:'Asia/Riyadh'},
+  riyadh: {lat:24.7136,lng:46.6753,tz:'Asia/Riyadh'},
+  mecca:  {lat:21.3891,lng:39.8579,tz:'Asia/Riyadh'},
+  medina: {lat:24.5247,lng:39.5692,tz:'Asia/Riyadh'},
+  cairo:  {lat:30.0444,lng:31.2357,tz:'Africa/Cairo'},
+  dubai:  {lat:25.2048,lng:55.2708,tz:'Asia/Dubai'},
+  kuwait: {lat:29.3759,lng:47.9774,tz:'Asia/Kuwait'},
+  amman:  {lat:31.9454,lng:35.9284,tz:'Asia/Amman'},
+  doha:   {lat:25.2854,lng:51.5310,tz:'Asia/Qatar'},
+  muscat: {lat:23.5880,lng:58.3829,tz:'Asia/Muscat'},
+  baghdad:{lat:33.3152,lng:44.3661,tz:'Asia/Baghdad'},
+  beirut: {lat:33.8938,lng:35.5018,tz:'Asia/Beirut'},
+  rabat:  {lat:33.9716,lng:-6.8498,tz:'Africa/Casablanca'}
+};
+/* Return UTC offset in fractional hours for a given IANA timezone at a given Date (handles DST) */
+function tzOffset(ianaName,date){
+  try{
+    const fmt=new Intl.DateTimeFormat('en-US',{timeZone:ianaName,hour:'numeric',minute:'numeric',hour12:false,timeZoneName:'short'});
+    /* Use the difference between local parts and UTC parts */
+    const local=new Intl.DateTimeFormat('en-US',{timeZone:ianaName,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date);
+    const utc=new Intl.DateTimeFormat('en-US',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date);
+    const parse=s=>{const[d,t]=s.split(', ');const[mo,dy,yr]=d.split('/');const[h,m,sc]=t.split(':');return new Date(Date.UTC(+yr,+mo-1,+dy,+h,+m,+sc));};
+    const diffMs=parse(local)-parse(utc);
+    return diffMs/3600000;
+  }catch(e){
+    /* fallback: use browser's own offset (correct when user's phone is set to the right timezone) */
+    return -date.getTimezoneOffset()/60;
+  }
+}
+
+/* ═══ STATE ═══ */
+let reminders=[];try{reminders=JSON.parse(localStorage.getItem('smr_apk')||'[]')}catch(e){}
+let selectedSound='bell';try{selectedSound=localStorage.getItem('smr_sound')||'bell'}catch(e){}
+let selCatV='prayer',filterCat='all',statFilter='all',alarmTimers={},autoNotifT=null;
+let activeAlarm=null,alarmCycle=0,alarmRingItv=null,alarmPauseT=null;
+const RING_MS=25000,PAUSE_MS=5000,MAX_CYCLES=3;
+
+/* ═══ HELPERS ═══ */
+function save(){
+  try{localStorage.setItem('smr_apk',JSON.stringify(reminders))}catch(e){}
+  // Also store in cache for SW background check
+  if('caches' in window){
+    caches.open('munabbahi-v2').then(c=>{
+      c.put('/alarms-data',new Response(JSON.stringify({reminders,ts:Date.now()}),{headers:{'Content-Type':'application/json'}}));
+    }).catch(()=>{});
+  }
+}
+function fmt12(t){if(!t)return{d:'--:--',ap:'ص',isAm:true,full:'صباحاً'};const[h,m]=t.split(':').map(Number);const isAm=h<12;const hh=h%12||12;return{d:`${hh}:${String(m).padStart(2,'0')}`,ap:isAm?'ص':'م',isAm,full:isAm?'صباحاً':'مساءً'};}
+function minsToTime(mins){const h=Math.floor(mins/60)%24,m=mins%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`}
+function toMins(t){if(!t)return 0;const[h,m]=t.split(':').map(Number);return h*60+m}
+function dfl(t){const nm=new Date().getHours()*60+new Date().getMinutes();let d=toMins(t)-nm;if(d<0)d+=1440;if(d===0)return'الآن!';if(d<60)return`بعد ${d}د`;const hh=Math.floor(d/60),mm=d%60;return mm?`بعد ${hh}س ${mm}د`:`بعد ${hh}س`;}
+
+/* ═══ NOTIFICATIONS PERMISSION ═══ */
+function checkPermBanner(){
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default')document.getElementById('permBanner').classList.remove('hidden');
+  else document.getElementById('permBanner').classList.add('hidden');
+}
+async function requestPermission(){
+  if(!('Notification' in window))return;
+  const p=await Notification.requestPermission();
+  document.getElementById('permBanner').classList.add('hidden');
+  if(p==='granted'){
+    showToast('✅ الإشعارات مفعّلة — المنبه سيعمل في الخلفية!');
+    setTimeout(()=>{ if(!isInStandaloneMode()) showInstallBanner(); }, 1200);
+  }
+  else{showToast('⚠️ بدون إذن الإشعارات لن يعمل المنبه في الخلفية');}
+}
+
+/* ═══ PRAYER CALC — corrected adhan algorithm ═══ */
+/* Get real UTC offset for an IANA timezone at a given Date (DST-aware) */
+function tzRealOffset(ianaZone, date) {
+  try {
+    const fmt = tz => new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date);
+    const parse = s => { const [dp,tp]=s.split(', ');const [mo,dy,yr]=dp.split('/');const [h,m,sc]=tp.replace('24:','00:').split(':');return Date.UTC(+yr,+mo-1,+dy,+h===24?0:+h,+m,+sc); };
+    return (parse(fmt(ianaZone)) - parse(fmt('UTC'))) / 3600000;
+  } catch(e) { return -date.getTimezoneOffset()/60; }
+}
+/* Accurate prayer time calculation using solar noon = 12 - lng/15 - eqt (adhan.js method) */
+function pCalc(lat, lng, ianaZone, date) {
+  const D2R=Math.PI/180, R2D=180/Math.PI;
+  const sd=x=>Math.sin(x*D2R), cd=x=>Math.cos(x*D2R), td=x=>Math.tan(x*D2R);
+  const acd=x=>R2D*Math.acos(Math.max(-1,Math.min(1,x)));
+  const asd=x=>R2D*Math.asin(Math.max(-1,Math.min(1,x)));
+  const fh=a=>((a%24)+24)%24;
+  /* DST-aware local offset */
+  const tz = tzRealOffset(ianaZone, date);
+  /* Julian date using local date in target city */
+  const loc = new Date(date.getTime() + tz*3600000);
+  let Y=loc.getUTCFullYear(), M=loc.getUTCMonth()+1, D=loc.getUTCDate();
+  if(M<=2){Y--;M+=12;}
+  const A=Math.floor(Y/100), B=2-A+Math.floor(A/4);
+  const JD=Math.floor(365.25*(Y+4716))+Math.floor(30.6001*(M+1))+D+B-1524.5;
+  const Dn=JD-2451545.0;
+  /* Sun position */
+  const g=(357.529+0.98560028*Dn)%360;
+  const q=(280.459+0.98564736*Dn)%360;
+  const L=(q+1.915*sd(g)+0.020*sd(2*g))%360;
+  const e=23.439-0.00000036*Dn;
+  const RA=R2D*Math.atan2(cd(e)*sd(L),cd(L))/15;
+  const eqt=q/15-((RA%24+24)%24);
+  const decl=asd(sd(e)*sd(L));
+  /* Solar noon in UTC hours: noon = 12 - lng/15 - eqt */
+  const noonUTC = 12 - lng/15 - eqt;
+  /* Hour angle for a given altitude angle */
+  function ha(angleDeg) {
+    const cosH=(sd(angleDeg)-sd(decl)*sd(lat))/(cd(decl)*cd(lat));
+    return acd(cosH)/15;
+  }
+  /* Asr hour angle */
+  function haAsr(shadow) {
+    const a=R2D*Math.atan(1/(shadow+Math.abs(td(lat-decl))));
+    return ha(a);
+  }
+  /* Convert UTC decimal hours to local HH:MM string */
+  function fmt(utcH) {
+    let t=fh(utcH+tz);
+    const h=Math.floor(t), raw=Math.round((t-h)*60);
+    const mm=raw>=60?raw-60:raw, hh=(raw>=60?h+1:h)%24;
+    return`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  }
+  const fajr_utc    = noonUTC - ha(-18.5);
+  const sunrise_utc = noonUTC - ha(-0.833);
+  const dhuhr_utc   = noonUTC;
+  const asr_utc     = noonUTC + haAsr(1);
+  const maghrib_utc = noonUTC + ha(-0.833);
+  const isha_utc    = maghrib_utc + 90/60;
+  return[fmt(fajr_utc),fmt(sunrise_utc),fmt(dhuhr_utc),fmt(asr_utc),fmt(maghrib_utc),fmt(isha_utc)];
+}
+function onCityChange(){try{localStorage.setItem('smr_city',document.getElementById('citySelect').value)}catch(e){}calcPrayers();}
+function calcPrayers(){
+  const city=document.getElementById('citySelect').value;
+  const cd=CITIES[city]||CITIES.jeddah;
+  const now=new Date();
+  const times=pCalc(cd.lat,cd.lng,cd.tz,now);
+  const nm=new Date().getHours()*60+new Date().getMinutes();
+  document.getElementById('prayersGrid').innerHTML=PNAMES.map((name,i)=>{
+    const t=times[i],f=fmt12(t),mns=toMins(t);
+    const passed=mns<nm,current=i<5?(mns<=nm&&nm<toMins(times[i+1])):(mns<=nm);
+    return`<div class="pr-item ${current?'current':''} ${passed&&!current?'passed':''}" onclick="prefillPrayer('${name}','${t}')">
+      <div class="pr-name">${name}</div><div class="pr-time">${f.d}</div>
+      <div class="pr-ampm ${f.isAm?'am':'pm'}">${f.ap}</div></div>`;
+  }).join('');
+}
+function prefillPrayer(name,time){
+  document.getElementById('remTitle').value='صلاة '+name;selCatV='prayer';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='prayer'));
+  document.getElementById('remRepeat').value='daily';
+  const tl=document.getElementById('timesList');tl.innerHTML='';tl.appendChild(makeTimeRow(time,1));updateTimesConfirm();
+  document.querySelector('.add-form').scrollIntoView({behavior:'smooth',block:'center'});
+  showToast(`تم تعبئة وقت ${name} ✅`);
+}
+
+/* ═══ CLOCK ═══ */
+function updateClock(){
+  const n=new Date(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds(),isAm=h<12,hh=h%12||12;
+  document.getElementById('clockT').textContent=`${hh}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const am=document.getElementById('clockAmBadge'),pm=document.getElementById('clockPmBadge');
+  if(isAm){am.className='clock-ampm am';pm.className='clock-ampm pm inactive';}
+  else{am.className='clock-ampm am inactive';pm.className='clock-ampm pm';}
+  document.getElementById('clockDay').textContent=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][n.getDay()];
+  document.getElementById('clockDateEN').textContent=n.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+
+/* ═══ SOUND ═══ */
+let audioCtx=null,activeOscs=[];
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
+function stopSound(){activeOscs.forEach(o=>{try{o.stop(0)}catch(e){}});activeOscs=[];}
+function playSound(id){
+  try{stopSound();const ac=getAC(),t=ac.currentTime;
+  const o=(f,tp,st,dur,gv)=>{const osc=ac.createOscillator(),g=ac.createGain();osc.connect(g);g.connect(ac.destination);osc.type=tp;osc.frequency.value=f;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(gv,st+.03);g.gain.exponentialRampToValueAtTime(.001,st+dur);osc.start(st);osc.stop(st+dur);activeOscs.push(osc);};
+  switch(id){
+    case'bell':[523,1047,2093].forEach((f,i)=>o(f,'sine',t,1.8,.4/(i+1)));break;
+    case'chime':[659,784,880,1047,1318].forEach((f,i)=>o(f,'triangle',t+i*.18,.9,.35));break;
+    case'digital':[[880,0],[1100,.22],[880,.44],[1100,.66]].forEach(([f,d])=>o(f,'square',t+d,.18,.2));break;
+    case'nature':[392,494,587,740,880,1047].forEach((f,i)=>o(f,'sine',t+i*.22+Math.random()*.08,1.6,.25));break;
+    case'oud':[220,440,660,880].forEach((f,i)=>o(f,i===0?'sawtooth':'sine',t,2.5,.3/(i+1)));break;
+    case'urgent':for(let i=0;i<6;i++){const osc=ac.createOscillator(),g=ac.createGain();osc.connect(g);g.connect(ac.destination);osc.type='sawtooth';osc.frequency.value=440+i*80;const st=t+i*.1;g.gain.setValueAtTime(.25,st);g.gain.setValueAtTime(0,st+.08);osc.start(st);osc.stop(st+.1);activeOscs.push(osc);}break;
+  }}catch(e){}
+}
+function buildSoundGrid(){document.getElementById('soundsGrid').innerHTML=SOUNDS.map(s=>`<div class="sound-btn ${s.id===selectedSound?'active':''}" onclick="selectSound('${s.id}')"><div class="sound-ico">${s.icon}</div><div class="sound-lbl">${s.label}</div><div class="sound-preview" onclick="event.stopPropagation();playSound('${s.id}')">${s.desc}</div></div>`).join('');}
+function selectSound(id){selectedSound=id;try{localStorage.setItem('smr_sound',id)}catch(e){}buildSoundGrid();playSound(id);showToast(`صوت: ${SOUNDS.find(s=>s.id===id).label}`);}
+
+/* ═══ ALARM SCREEN ═══ */
+function startAlarmCycle(){
+  if(!activeAlarm)return;
+  alarmCycle++;
+  document.getElementById('alarmCycle').textContent=`يرن... دورة ${alarmCycle} من ${MAX_CYCLES}`;
+  playSound(activeAlarm.sound||selectedSound);
+  let elapsed=0;
+  clearInterval(alarmRingItv);
+  alarmRingItv=setInterval(()=>{
+    elapsed+=2000;
+    if(elapsed<RING_MS){playSound(activeAlarm?.sound||selectedSound);}
+    else{
+      clearInterval(alarmRingItv);stopSound();
+      if(!activeAlarm)return;
+      if(alarmCycle<MAX_CYCLES){
+        document.getElementById('alarmCycle').textContent='توقف مؤقت... سيرن مجدداً';
+        alarmPauseT=setTimeout(()=>{if(activeAlarm)startAlarmCycle();},PAUSE_MS);
+      } else {
+        document.getElementById('alarmCycle').textContent='انتهت الدورات — ينقل للمكتمل';
+        alarmPauseT=setTimeout(()=>{if(activeAlarm)autoFinishAlarm();},2000);
+      }
+    }
+  },2000);
+}
+function showAlarmScreen(rem,slotIdx){
+  clearInterval(alarmRingItv);clearTimeout(alarmPauseT);
+  activeAlarm={remId:rem.id,slotIdx,sound:rem.sound||selectedSound};
+  alarmCycle=0;
+  const c=CATS[rem.cat]||CATS.custom,f=fmt12(rem.times[slotIdx].time);
+  document.getElementById('alarmEmoji').textContent=c.icon;
+  document.getElementById('alarmTtl').textContent=rem.title;
+  document.getElementById('alarmTm').textContent=f.d;
+  document.getElementById('alarmAp').textContent=f.full;
+  document.getElementById('alarmCat').textContent=c.label;
+  document.getElementById('alarmNt').textContent=rem.note||'';
+  document.getElementById('alarmOverlay').classList.add('show');
+  startAlarmCycle();
+}
+function snoozeAlarm(){
+  clearInterval(alarmRingItv);clearTimeout(alarmPauseT);stopSound();
+  if(!activeAlarm)return;
+  const sa={...activeAlarm};
+  document.getElementById('alarmOverlay').classList.remove('show');
+  activeAlarm=null;
+  showToast('تأجيل 5 دقائق ⏰');
+  // Schedule browser notification for snooze
+  if(Notification.permission==='granted'){
+    setTimeout(()=>{
+      const r=reminders.find(r=>r.id===sa.remId);
+      if(r&&!r.times[sa.slotIdx].done){
+        showAlarmScreen(r,sa.slotIdx);
+        new Notification(`🔔 ${r.title}`,{body:'انتهى التأجيل — حان وقت التنبيه!',icon:'./icons/icon-192.png',vibrate:[300,100,300],requireInteraction:true});
+      }
+    },5*60*1000);
+  }
+}
+function doneAlarm(){
+  clearInterval(alarmRingItv);clearTimeout(alarmPauseT);stopSound();
+  if(!activeAlarm)return;
+  const r=reminders.find(r=>r.id===activeAlarm.remId);
+  if(r){r.times[activeAlarm.slotIdx].done=true;r.times[activeAlarm.slotIdx].autoCompleted=false;save();}
+  document.getElementById('alarmOverlay').classList.remove('show');
+  activeAlarm=null;
+  renderPendingPanel();renderDonePanel();renderList();updateStats();
+  showToast('✅ تم — أحسنت!');
+}
+function autoFinishAlarm(){
+  clearInterval(alarmRingItv);clearTimeout(alarmPauseT);stopSound();
+  if(!activeAlarm)return;
+  const r=reminders.find(r=>r.id===activeAlarm.remId);
+  if(r){r.times[activeAlarm.slotIdx].done=true;r.times[activeAlarm.slotIdx].autoCompleted=true;save();}
+  document.getElementById('alarmOverlay').classList.remove('show');
+  showAutoNotif(r?.title||'');
+  activeAlarm=null;
+  renderPendingPanel();renderDonePanel();renderList();updateStats();
+}
+
+/* ═══ BACKGROUND NOTIFICATION (when app closed) ═══ */
+function scheduleNotification(rem,slotIdx){
+  // Use Notification API to fire when app is closed — SW handles the wake
+  if(Notification.permission!=='granted')return;
+  // We schedule via a setTimeout that also posts to SW
+  const[h,m]=rem.times[slotIdx].time.split(':').map(Number);
+  const now=new Date(),target=new Date();
+  target.setHours(h,m,0,0);
+  if(target<=now)target.setDate(target.getDate()+1);
+  const delay=target-now;
+  // setTimeout for when app is OPEN
+  return delay;
+}
+
+/* ═══ TIME ROW ═══ */
+function makeTimeRow(val='',num=1){
+  const div=document.createElement('div');div.className='time-row';
+  const numEl=document.createElement('span');numEl.className='time-row-num';numEl.textContent=num+'.';
+  const wrap=document.createElement('div');wrap.className='time-inp-wrap';
+  const inp=document.createElement('input');inp.type='time';inp.value=val;
+  const pair=document.createElement('div');pair.className='ampm-pair';
+  const bAM=document.createElement('button');bAM.type='button';bAM.className='btn-am';bAM.textContent='ص';
+  const bPM=document.createElement('button');bPM.type='button';bPM.className='btn-pm';bPM.textContent='م';
+  function sync(){const isAm=!inp.value||Number(inp.value.split(':')[0])<12;bAM.className='btn-am'+(isAm?' sel':'');bPM.className='btn-pm'+(!isAm?' sel':'');}
+  bAM.onclick=()=>{if(!inp.value)inp.value='08:00';const[h,m]=inp.value.split(':').map(Number);if(h>=12)inp.value=`${String(h-12).padStart(2,'0')}:${String(m).padStart(2,'0')}`;sync();updateTimesConfirm();};
+  bPM.onclick=()=>{if(!inp.value)inp.value='14:00';const[h,m]=inp.value.split(':').map(Number);if(h<12)inp.value=`${String(h+12).padStart(2,'0')}:${String(m).padStart(2,'0')}`;sync();updateTimesConfirm();};
+  inp.addEventListener('change',()=>{sync();updateTimesConfirm();});sync();
+  const del=document.createElement('button');del.className='btn-rem-time';del.type='button';del.textContent='−';
+  del.onclick=()=>{if(document.querySelectorAll('#timesList .time-row').length<=1){showToast('⚠️ موعد واحد على الأقل');return}div.remove();renumberRows();updateTimesConfirm();};
+  pair.appendChild(bAM);pair.appendChild(bPM);
+  wrap.appendChild(inp);wrap.appendChild(pair);
+  div.appendChild(numEl);div.appendChild(wrap);div.appendChild(del);
+  return div;
+}
+function renumberRows(){document.querySelectorAll('#timesList .time-row').forEach((r,i)=>{const n=r.querySelector('.time-row-num');if(n)n.textContent=(i+1)+'.';})}
+function addTimeRow(){const c=document.querySelectorAll('#timesList .time-row').length;document.getElementById('timesList').appendChild(makeTimeRow('',c+1));updateTimesConfirm();}
+function updateTimesConfirm(){
+  const c=document.querySelectorAll('#timesList .time-row').length;
+  document.getElementById('timesCnt').textContent=c+' موعد'+(c>1?'ي':'');
+  const mc=document.getElementById('multiConfirm');
+  c>=2?(mc.classList.add('show'),document.getElementById('multiTxt').textContent=`✔ ${c} مواعيد — سيُنبّه ${c} مرات`):(mc.classList.remove('show'));
+}
+
+/* ═══ STATS ═══ */
+function selCat(btn){document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selCatV=btn.dataset.cat}
+function setFilter(btn){document.querySelectorAll('.fpill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterCat=btn.dataset.f;renderList()}
+function filterByStat(t){
+  statFilter=t;
+  ['statAll','statDoneEl','statPendEl'].forEach(id=>document.getElementById(id).style.outline='');
+  if(t==='all')document.getElementById('statAll').style.outline='2px solid var(--sky)';
+  else if(t==='done')document.getElementById('statDoneEl').style.outline='2px solid var(--mint)';
+  else document.getElementById('statPendEl').style.outline='2px solid var(--gold)';
+  renderPendingPanel();renderDonePanel();renderList();
+}
+function updateStats(){
+  const total=reminders.length;let p=0,d=0;
+  reminders.forEach(r=>r.times.forEach(t=>t.done?d++:p++));
+  document.getElementById('sTotal').textContent=total;document.getElementById('sDone').textContent=d;document.getElementById('sPend').textContent=p;
+  document.getElementById('totalCount').textContent=`${total} تنبيه`;
+}
+
+/* ═══ PANELS ═══ */
+function renderPendingPanel(){
+  const panel=document.getElementById('pendingPanel');
+  panel.style.display=statFilter==='pending'?'block':'none';
+  if(statFilter!=='pending')return;
+  const nm=new Date().getHours()*60+new Date().getMinutes();
+  let items=[];
+  reminders.forEach(r=>r.times.forEach((slot,idx)=>{if(slot.done)return;let diff=toMins(slot.time)-nm;if(diff<0)diff+=1440;items.push({remId:r.id,remTitle:r.title,cat:r.cat,repeat:r.repeat,slotIdx:idx,time:slot.time,diff});}));
+  items.sort((a,b)=>a.diff-b.diff);
+  document.getElementById('pendingCnt').textContent=items.length;
+  const list=document.getElementById('pendingList');
+  if(!items.length){list.innerHTML='<div class="no-items">🎉 لا توجد تنبيهات قادمة</div>';return}
+  let html='',prevLbl=null;
+  items.forEach(it=>{
+    const lbl=it.diff<60?'⚡ قريباً':it.diff<360?'🕐 خلال ساعات':'📅 لاحقاً';
+    if(lbl!==prevLbl){html+=`<div class="sep-time">${lbl}</div>`;prevLbl=lbl;}
+    const c=CATS[it.cat]||CATS.custom,f=fmt12(it.time);
+    html+=`<div class="pending-item"><div class="pend-ico" style="background:${c.bg}">${c.icon}</div>
+      <div class="pend-info"><div class="pend-title">${it.remTitle}</div><div class="pend-cat" style="color:${c.color}">${c.label}·${RPLBL[it.repeat]}</div></div>
+      <div class="pend-time-center"><div class="pend-time-val" style="color:${c.color}">${f.d}</div><span class="pend-ampm-badge ${f.isAm?'am':'pm'}" onclick="toggleSlotAmpm(${it.remId},${it.slotIdx})">${f.ap}</span><div class="pend-diff">${dfl(it.time)}</div></div>
+      <div class="pend-actions">
+        <div class="pend-act-wrap pend-edit-wrap" id="ew_${it.remId}_${it.slotIdx}">
+          <span class="pend-act-lbl">تعديل</span>
+          <button class="btn-pend-act btn-pend-edit" onclick="toggleEditPopup(${it.remId},${it.slotIdx})">✏️</button>
+          <div class="pend-edit-popup" id="ep_${it.remId}_${it.slotIdx}">
+            <input type="time" id="et_${it.remId}_${it.slotIdx}" value="${it.time}">
+            <div class="pend-edit-ampm" id="ea_${it.remId}_${it.slotIdx}">
+              <button onclick="setEA(${it.remId},${it.slotIdx},true)" class="${f.isAm?'ea-am-sel':'ea-unsel'}">ص صباحاً</button>
+              <button onclick="setEA(${it.remId},${it.slotIdx},false)" class="${!f.isAm?'ea-pm-sel':'ea-unsel'}">م مساءً</button>
+            </div>
+            <button class="pend-save-btn" onclick="saveEdit(${it.remId},${it.slotIdx})">حفظ</button>
+          </div>
+        </div>
+        <div class="pend-act-wrap"><span class="pend-act-lbl">حذف</span><button class="btn-pend-act btn-pend-del" onclick="delSlot(${it.remId},${it.slotIdx})">🗑️</button></div>
+      </div></div>`;
+  });
+  list.innerHTML=html;
+  document.onclick=e=>{document.querySelectorAll('.pend-edit-popup.open').forEach(p=>{if(!p.closest('.pend-edit-wrap').contains(e.target))p.classList.remove('open')});};
+}
+function renderDonePanel(){
+  const panel=document.getElementById('donePanel');
+  panel.style.display=statFilter==='done'?'block':'none';
+  if(statFilter!=='done')return;
+  let items=[];
+  reminders.forEach(r=>r.times.forEach((slot,idx)=>{if(!slot.done)return;items.push({remId:r.id,remTitle:r.title,cat:r.cat,repeat:r.repeat,slotIdx:idx,time:slot.time,auto:slot.autoCompleted||false});}));
+  items.sort((a,b)=>toMins(a.time)-toMins(b.time));
+  document.getElementById('doneCnt').textContent=items.length;
+  const list=document.getElementById('doneList');
+  if(!items.length){list.innerHTML='<div class="no-items">لا توجد مكتملة بعد</div>';return}
+  list.innerHTML=items.map(it=>{
+    const c=CATS[it.cat]||CATS.custom,f=fmt12(it.time);
+    return`<div class="done-item"><div class="done-ico" style="background:${c.bg}">${c.icon}</div>
+      <div class="done-info"><div class="done-title">${it.auto?'<span class="done-auto-tag">تلقائي</span>':''}${it.remTitle}</div><div class="done-meta" style="color:${c.color}">${c.label}·${RPLBL[it.repeat]}</div></div>
+      <div class="done-time-col"><div class="done-time-val">${f.d}</div><span class="done-ampm">${f.ap}</span></div>
+      <button class="btn-undone" onclick="toggleSlotDone(${it.remId},${it.slotIdx},false)">↩</button></div>`;
+  }).join('');
+}
+function toggleEditPopup(rid,si){const ep=document.getElementById(`ep_${rid}_${si}`);document.querySelectorAll('.pend-edit-popup.open').forEach(p=>{if(p!==ep)p.classList.remove('open')});ep.classList.toggle('open');}
+function setEA(rid,si,isAm){const inp=document.getElementById(`et_${rid}_${si}`);if(!inp.value)return;const[h,m]=inp.value.split(':').map(Number);if(h<12!==isAm)inp.value=`${String((h+12)%24).padStart(2,'0')}:${String(m).padStart(2,'0')}`;const btns=document.querySelectorAll(`#ea_${rid}_${si} button`);btns[0].className=isAm?'ea-am-sel':'ea-unsel';btns[1].className=!isAm?'ea-pm-sel':'ea-unsel';}
+function saveEdit(rid,si){const inp=document.getElementById(`et_${rid}_${si}`);if(!inp.value)return;const r=reminders.find(r=>r.id===rid);if(!r)return;r.times[si].time=inp.value;save();renderPendingPanel();renderList();showToast('✅ تم التعديل');}
+function toggleSlotAmpm(rid,si){const r=reminders.find(r=>r.id===rid);if(!r)return;const[h,m]=r.times[si].time.split(':').map(Number);r.times[si].time=`${String((h+12)%24).padStart(2,'0')}:${String(m).padStart(2,'0')}`;save();renderPendingPanel();renderList();}
+function toggleSlotDone(rid,si,auto){const r=reminders.find(r=>r.id===rid);if(!r)return;const s=r.times[si];if(auto===false){s.done=false;s.autoCompleted=false;}else{s.done=!s.done;s.autoCompleted=auto===true;}save();renderPendingPanel();renderDonePanel();renderList();updateStats();}
+function delSlot(rid,si){const r=reminders.find(r=>r.id===rid);if(!r)return;if(r.times.length===1){if(!confirm('سيتم حذف التنبيه كاملاً. متابعة؟'))return;reminders=reminders.filter(x=>x.id!==rid);}else r.times.splice(si,1);save();renderPendingPanel();renderDonePanel();renderList();updateStats();showToast('🗑️ تم الحذف');}
+
+/* ═══ ADD / LIST ═══ */
+function addReminder(){
+  const title=document.getElementById('remTitle').value.trim();if(!title){showToast('⚠️ أدخل عنوان التنبيه');return}
+  const times=[...document.querySelectorAll('#timesList .time-row input[type=time]')].map(i=>i.value).filter(v=>v);
+  if(!times.length){showToast('⚠️ حدد موعداً على الأقل');return}
+  const rem={id:Date.now(),title,times:times.map(t=>({time:t,done:false,autoCompleted:false})),cat:selCatV,repeat:document.getElementById('remRepeat').value,note:document.getElementById('remNote').value.trim(),sound:selectedSound};
+  reminders.unshift(rem);save();scheduleAlarms(rem);renderList();updateStats();renderPendingPanel();renderDonePanel();
+  document.getElementById('remTitle').value='';document.getElementById('remNote').value='';
+  const tl=document.getElementById('timesList');tl.innerHTML='';tl.appendChild(makeTimeRow('',1));updateTimesConfirm();
+  showToast(`✅ تم الإضافة بـ${times.length} موعد!`);
+}
+function deleteReminder(id){reminders=reminders.filter(r=>r.id!==id);save();renderList();updateStats();renderPendingPanel();renderDonePanel();showToast('🗑️ تم الحذف')}
+function toggleSlot(rid,si){const r=reminders.find(r=>r.id===rid);if(!r)return;r.times[si].done=!r.times[si].done;r.times[si].autoCompleted=false;save();renderList();updateStats();renderPendingPanel();renderDonePanel();}
+function toggleCard(id){const el=document.getElementById('rc'+id);if(el)el.classList.toggle('open')}
+function renderList(){
+  const list=document.getElementById('remList');
+  if(statFilter==='pending'||statFilter==='done'){list.innerHTML='';return}
+  let filtered=reminders.filter(r=>filterCat==='all'||r.cat===filterCat);
+  if(!filtered.length){list.innerHTML=`<div class="empty-st"><div class="eico">🔔</div><p>لا توجد تنبيهات</p></div>`;return}
+  filtered=[...filtered].sort((a,b)=>toMins(a.times[0]?.time||'00:00')-toMins(b.times[0]?.time||'00:00'));
+  list.innerHTML=filtered.map(r=>{
+    const c=CATS[r.cat]||CATS.custom,allDone=r.times.every(t=>t.done),doneCnt=r.times.filter(t=>t.done).length,f=fmt12(r.times[0]?.time||'');
+    return`<div class="rem-card ${allDone?'done-all':''}" id="rc${r.id}">
+      <div class="rem-main" onclick="toggleCard(${r.id})">
+        <div class="rem-icon-w" style="background:${c.bg}">${c.icon}</div>
+        <div class="rem-info"><div class="rem-title-text">${r.title}</div>
+          <div class="rem-meta"><span class="tbadge" style="background:${c.bg};color:${c.color}">${f.d} ${f.ap}</span>${r.times.length>1?`<span style="color:${c.color};font-size:10px">+${r.times.length-1} مواعيد</span>`:''}<span style="color:${c.color};font-size:10px">${c.label}</span><span class="rem-repeat">${RPLBL[r.repeat]}</span><span style="font-size:10px;color:${allDone?'var(--mint)':'var(--text3)'}">${doneCnt}/${r.times.length}</span></div>
+        </div>
+        <span class="expand-icon">▼</span>
+        <button class="btn-del-rem" onclick="event.stopPropagation();deleteReminder(${r.id})">🗑️</button>
+      </div>
+      <div class="rem-times-panel">
+        <div class="times-panel-title">المواعيد (${r.times.length})</div>
+        <div class="time-slot-list">${r.times.map((s,i)=>{const sf=fmt12(s.time);return`<div class="time-slot ${s.done?'slot-done':''}"><div><div class="ts-time" style="color:${s.done?'var(--text2)':c.color}">${sf.d}<span class="ts-ampm ${sf.isAm?'am':'pm'}">${sf.ap}</span></div>${r.note&&i===0?`<div class="ts-note">${r.note}</div>`:''}</div><button class="btn-ts-done ${s.done?'done':''}" onclick="toggleSlot(${r.id},${i})">${s.done?'✓ مكتمل':'إتمام'}</button></div>`;}).join('')}</div>
+      </div></div>`;
+  }).join('');
+}
+
+/* ═══ SCHEDULING ═══ */
+function scheduleAlarms(rem){
+  rem.times.forEach((slot,i)=>{
+    const key=`${rem.id}_${i}`;if(alarmTimers[key])clearInterval(alarmTimers[key]);
+    alarmTimers[key]=setInterval(()=>{
+      if(slot.done)return;
+      const n=new Date(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+      const[sh,sm]=slot.time.split(':').map(Number);
+      if(h===sh&&m===sm&&s===0){
+        const r=reminders.find(r=>r.id===rem.id);
+        if(r&&!r.times[i].done){
+          showAlarmScreen(r,i);
+          // Also fire system notification (works when app is OPEN in background)
+          if(Notification.permission==='granted'){
+            const c=CATS[r.cat]||CATS.custom,f=fmt12(r.times[i].time);
+            new Notification(`${c.icon} ${r.title}`,{body:r.note||`حان وقت ${c.label} — ${f.d} ${f.full}`,icon:'./icons/icon-192.png',badge:'./icons/icon-192.png',vibrate:[300,100,300,100,300],requireInteraction:true,tag:`${r.id}-${i}`,silent:false});
+          }
+        }
+      }
+    },1000);
+  });
+}
+
+/* ═══ SW REGISTRATION ═══ */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    // Request periodic sync for background alarm check
+    if('periodicSync' in reg){
+      navigator.permissions.query({name:'periodic-background-sync'}).then(status=>{
+        if(status.state==='granted'){
+          reg.periodicSync.register('alarm-check',{minInterval:60*1000}).catch(()=>{});
+        }
+      }).catch(()=>{});
+    }
+  }).catch(()=>{});
+  // Listen for messages from SW (notification actions)
+  navigator.serviceWorker.addEventListener('message',e=>{
+    if(e.data?.type==='alarm-action'){
+      if(e.data.action==='done'){
+        const[rid,si]=e.data.tag.split('-').map(Number);
+        toggleSlotDone(rid,si,false);
+      }
+    }
+  });
+}
+
+function showAutoNotif(title){
+  document.getElementById('autoNotifTxt').textContent=`"${title}" انتهى وقته`;
+  const el=document.getElementById('autoNotif');el.classList.add('show');
+  clearTimeout(autoNotifT);autoNotifT=setTimeout(()=>el.classList.remove('show'),4000);
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+/* ═══ PWA INSTALL ═══ */
+let deferredInstallPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!localStorage.getItem('pwa_install_dismissed')) showInstallBanner();
+});
+
+window.addEventListener('appinstalled', () => {
+  hideInstallBanner();
+  showToast('🎉 تم تثبيت منبّهي على الشاشة الرئيسية!');
+  deferredInstallPrompt = null;
+});
+
+function showInstallBanner() {
+  if (isInStandaloneMode()) return;
+  document.getElementById('installBanner').classList.add('show');
+}
+function hideInstallBanner() {
+  document.getElementById('installBanner').classList.remove('show');
+}
+async function doInstall() {
+  if (isIOS) { document.getElementById('iosGuide').classList.add('show'); return; }
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    showToast(outcome === 'accepted' ? '🎉 جاري التثبيت...' : 'يمكنك التثبيت لاحقاً من قائمة المتصفح');
+    deferredInstallPrompt = null;
+    hideInstallBanner();
+  } else {
+    showToast('افتح قائمة المتصفح ⋮ واختر "إضافة إلى الشاشة الرئيسية"');
+    hideInstallBanner();
+  }
+}
+function dismissInstall() {
+  hideInstallBanner();
+  try { localStorage.setItem('pwa_install_dismissed', '1'); } catch(e) {}
+}
+window.addEventListener('load', () => {
+  if (isInStandaloneMode()) return;
+  if (isIOS && !localStorage.getItem('pwa_install_dismissed')) setTimeout(showInstallBanner, 1500);
+});
+
+/* ═══ INIT ═══ */
+const defaults=[
+  {id:1,title:'صلاة الفجر',times:[{time:'04:30',done:false,autoCompleted:false}],cat:'prayer',repeat:'daily',note:'',sound:'bell'},
+  {id:2,title:'دواء الضغط',times:[{time:'08:00',done:false,autoCompleted:false},{time:'14:00',done:false,autoCompleted:false},{time:'21:00',done:false,autoCompleted:false}],cat:'meds',repeat:'daily',note:'بعد الأكل',sound:'chime'},
+  {id:3,title:'مذاكرة الرياضيات',times:[{time:'16:00',done:false,autoCompleted:false},{time:'20:00',done:false,autoCompleted:false}],cat:'study',repeat:'workdays',note:'',sound:'bell'},
+  {id:4,title:'جلسة الجيم',times:[{time:'07:00',done:false,autoCompleted:false}],cat:'gym',repeat:'daily',note:'',sound:'nature'},
+  {id:5,title:'فحص الدم',times:[{time:'09:00',done:false,autoCompleted:false}],cat:'checkup',repeat:'once',note:'المختبر',sound:'chime'},
+];
+if(!reminders.length){reminders=defaults;save();}
+else{save();} // sync to cache on load
+try{const sc=localStorage.getItem('smr_city');if(sc)document.getElementById('citySelect').value=sc;}catch(e){}
+reminders.forEach(r=>scheduleAlarms(r));
+const tl=document.getElementById('timesList');tl.appendChild(makeTimeRow('',1));
+updateTimesConfirm();buildSoundGrid();calcPrayers();renderList();updateStats();updateClock();checkPermBanner();
+setInterval(updateClock,1000);
+setInterval(()=>{calcPrayers();if(statFilter==='pending')renderPendingPanel();},60000);
+</script>
+</body>
+</html>

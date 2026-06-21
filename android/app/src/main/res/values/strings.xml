@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">منبّهي الذكي</string>
+    <string name="title_activity_main">منبّهي الذكي</string>
+    <string name="package_name">com.munabbahi.app</string>
+    <string name="custom_url_scheme">com.munabbahi.app</string>
+</resources>
